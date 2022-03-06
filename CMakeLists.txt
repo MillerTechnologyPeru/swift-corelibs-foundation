@@ -74,8 +74,8 @@ endif()
 
 if(NOT BUILD_SHARED_LIBS)
   set_property(GLOBAL APPEND PROPERTY Foundation_EXPORTS
-    CoreFoundation CFXMLInterface CFURLSessionInterface)
-  install(TARGETS CoreFoundation CFXMLInterface CFURLSessionInterface
+    CoreFoundation)
+  install(TARGETS CoreFoundation
     DESTINATION lib/swift_static/$<LOWER_CASE:${CMAKE_SYSTEM_NAME}>)
 endif()
 
@@ -94,23 +94,5 @@ install(FILES
           CoreFoundation/Base.subproj/$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:static/>module.map
         DESTINATION
           ${swift_lib_dir}/CoreFoundation)
-install(DIRECTORY
-          ${CMAKE_CURRENT_BINARY_DIR}/CFURLSessionInterface.framework/Headers/
-        DESTINATION
-          ${swift_lib_dir}/CFURLSessionInterface
-        FILES_MATCHING PATTERN "*.h")
-install(FILES
-          CoreFoundation/URL.subproj/$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:static/>module.map
-        DESTINATION
-          ${swift_lib_dir}/CFURLSessionInterface)
-install(DIRECTORY
-          ${CMAKE_CURRENT_BINARY_DIR}/CFXMLInterface.framework/Headers/
-        DESTINATION
-          ${swift_lib_dir}/CFXMLInterface
-        FILES_MATCHING PATTERN "*.h")
-install(FILES
-          CoreFoundation/Parsing.subproj/$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:static/>module.map
-        DESTINATION
-          ${swift_lib_dir}/CFXMLInterface)
 
 add_subdirectory(cmake/modules)

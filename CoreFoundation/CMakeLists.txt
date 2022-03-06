@@ -25,13 +25,6 @@ set(THREADS_PREFER_PTHREAD_FLAG OFF)
 find_package(Threads REQUIRED)
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL Darwin)
-  find_package(LibXml2 REQUIRED)
-  find_package(CURL CONFIG)
-  if(CURL_FOUND)
-    set(CURL_VERSION_STRING ${CURL_VERSION})
-  else()
-    find_package(CURL REQUIRED)
-  endif()
   find_package(ICU COMPONENTS uc i18n REQUIRED)
 endif()
 
@@ -392,57 +385,6 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL Darwin)
     ICU::i18n)
 endif()
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL Darwin)
-  if((NS_CURL_ASSUME_FEATURES_MISSING) OR (CURL_VERSION_STRING VERSION_LESS "7.32.0"))
-    add_compile_definitions($<$<COMPILE_LANGUAGE:C>:NS_CURL_MISSING_XFERINFOFUNCTION>)
-  endif()
-
-  if((NS_CURL_ASSUME_FEATURES_MISSING) OR (CURL_VERSION_STRING VERSION_LESS "7.30.0"))
-    add_compile_definitions($<$<COMPILE_LANGUAGE:C>:NS_CURL_MISSING_MAX_HOST_CONNECTIONS>)
-  endif()
-endif()
-
-add_framework(CFURLSessionInterface
-                ${FRAMEWORK_LIBRARY_TYPE}
-              FRAMEWORK_DIRECTORY
-                CFURLSessionInterface_FRAMEWORK_DIRECTORY
-              MODULE_MAP
-                URL.subproj/module.modulemap
-              PRIVATE_HEADERS
-                URL.subproj/CFURLSessionInterface.h
-              PUBLIC_HEADERS
-                URL.subproj/CFURLSessionInterface.h
-              SOURCES
-                URL.subproj/CFURLSessionInterface.c)
-add_dependencies(CFURLSessionInterface CoreFoundation)
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-  target_compile_definitions(CFURLSessionInterface
-                             PRIVATE
-                               CURL_STATICLIB)
-endif()
-if(NOT CMAKE_SYSTEM_NAME STREQUAL Darwin)
-  target_link_libraries(CFURLSessionInterface PRIVATE
-    CURL::libcurl)
-endif()
-
-add_framework(CFXMLInterface
-                ${FRAMEWORK_LIBRARY_TYPE}
-              FRAMEWORK_DIRECTORY
-                CFXMLInterface_FRAMEWORK_DIRECTORY
-              MODULE_MAP
-                Parsing.subproj/module.modulemap
-              PRIVATE_HEADERS
-                Parsing.subproj/CFXMLInterface.h
-              PUBLIC_HEADERS
-                Parsing.subproj/CFXMLInterface.h
-              SOURCES
-                Parsing.subproj/CFXMLInterface.c)
-add_dependencies(CFXMLInterface CoreFoundation)
-if(NOT CMAKE_SYSTEM_NAME STREQUAL Darwin)
-  target_link_libraries(CFXMLInterface PRIVATE
-    LibXml2::LibXml2)
-endif()
-
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
   add_library(CoreFoundationResources OBJECT
     CoreFoundation.rc)
@@ -485,30 +427,12 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL Windows AND NOT CMAKE_SYSTEM_NAME STREQUAL Dar
   target_link_libraries(CoreFoundation
                         PRIVATE
                           m)
-  target_link_libraries(CFURLSessionInterface
-                        PRIVATE
-                          m)
-  target_link_libraries(CFXMLInterface
-                        PRIVATE
-                          m)
 endif()
 target_link_libraries(CoreFoundation
                       PRIVATE
                         dispatch)
-target_link_libraries(CFURLSessionInterface
-                      PRIVATE
-                        dispatch)
-target_link_libraries(CFXMLInterface
-                      PRIVATE
-                        dispatch)
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
   target_link_libraries(CoreFoundation
-                        PRIVATE
-                          icucore)
-  target_link_libraries(CFURLSessionInterface
-                        PRIVATE
-                          icucore)
-  target_link_libraries(CFXMLInterface
                         PRIVATE
                           icucore)
   set_target_properties(CoreFoundation
@@ -518,8 +442,6 @@ endif()
 
 install(TARGETS
           CoreFoundation
-          CFURLSessionInterface
-          CFXMLInterface
         DESTINATION
           "${CMAKE_INSTALL_FULL_LIBDIR}")
 
