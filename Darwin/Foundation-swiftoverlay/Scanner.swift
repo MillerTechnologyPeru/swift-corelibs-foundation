@@ -86,11 +86,11 @@ extension Scanner {
     }
     
     public func scanInt(representation: NumberRepresentation = .decimal) -> Int? {
-#if arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le)
+#if arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le) || arch(mips64) || arch(mips64el)
         if let value = scanInt64(representation: representation) { 
             return Int(value)
         }
-#elseif arch(i386) || arch(arm)
+#elseif arch(i386) || arch(arm) || arch(mips) || arch(mipsel)
         if let value = scanInt32(representation: representation) { 
             return Int(value)
         }

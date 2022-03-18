@@ -379,9 +379,9 @@ extension NSRange: NSSpecialValueCoding {
     }
     
     static func objCType() -> String {
-#if arch(i386) || arch(arm)
+#if arch(i386) || arch(arm) || arch(mips) || arch(mipsel)
         return "{_NSRange=II}"
-#elseif arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le)
+#elseif arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le) || arch(mips64) || arch(mips64el)
         return "{_NSRange=QQ}"
 #else
         #error("This architecture isn't known. Add it to the 32-bit or 64-bit line.")
