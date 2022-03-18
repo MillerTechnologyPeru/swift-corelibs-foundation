@@ -736,9 +736,9 @@ open class NSNumber : NSValue {
     
     public convenience init(value: Int) {
         var value = value
-        #if arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le)
+        #if arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le) || arch(mips64) || arch(mips64el)
             self.init(bytes: &value, numberType: kCFNumberSInt64Type)
-        #elseif arch(i386) || arch(arm) || arch(wasm32)
+        #elseif arch(i386) || arch(arm) || arch(wasm32) || arch(mips) || arch(mipsel)
             self.init(bytes: &value, numberType: kCFNumberSInt32Type)
         #else
             #error("This architecture isn't known. Add it to the 32-bit or 64-bit line.")
@@ -746,7 +746,7 @@ open class NSNumber : NSValue {
     }
     
     public convenience init(value: UInt) {
-    #if arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le)
+    #if arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le) || arch(mips64) || arch(mips64el)
         if value > UInt64(Int64.max) {
             var value = CFSInt128Struct(high: 0, low: UInt64(value))
             self.init(bytes: &value, numberType: kCFNumberSInt128Type)
@@ -754,7 +754,7 @@ open class NSNumber : NSValue {
             var value = Int64(value)
             self.init(bytes: &value, numberType: kCFNumberSInt64Type)
         }
-    #elseif arch(i386) || arch(arm) || arch(wasm32)
+    #elseif arch(i386) || arch(arm) || arch(wasm32) || arch(mips) || arch(mipsel)
         var value = Int64(value)
         self.init(bytes: &value, numberType: kCFNumberSInt64Type)
     #else

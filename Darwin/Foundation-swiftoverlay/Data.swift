@@ -863,9 +863,9 @@ public struct Data : ReferenceConvertible, Equatable, Hashable, RandomAccessColl
         }
     }
 
-#if arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le)
+#if arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le) || arch(mips64) || arch(mips64el)
     @usableFromInline internal typealias HalfInt = Int32
-#elseif arch(i386) || arch(arm)
+#elseif arch(i386) || arch(arm) || arch(mips) || arch(mipsel)
     @usableFromInline internal typealias HalfInt = Int16
 #endif
 

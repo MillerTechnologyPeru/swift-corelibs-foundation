@@ -9,11 +9,11 @@
 
 @frozen
 public struct CGFloat {
-#if arch(i386) || arch(arm) || arch(wasm32)
+#if arch(i386) || arch(arm) || arch(wasm32) || arch(mips) || arch(mipsel)
     /// The native type used to store the CGFloat, which is Float on
     /// 32-bit architectures and Double on 64-bit architectures.
     public typealias NativeType = Float
-#elseif arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le)
+#elseif arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le) || arch(mips64) || arch(mips64el)
     /// The native type used to store the CGFloat, which is Float on
     /// 32-bit architectures and Double on 64-bit architectures.
     public typealias NativeType = Double
@@ -185,9 +185,9 @@ extension CGFloat : BinaryFloatingPoint {
 
     @_transparent
     public init(bitPattern: UInt) {
-#if arch(i386) || arch(arm) || arch(wasm32)
+#if arch(i386) || arch(arm) || arch(wasm32) || arch(mips) || arch(mipsel)
         native = NativeType(bitPattern: UInt32(bitPattern))
-#elseif arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le)
+#elseif arch(x86_64) || arch(arm64) || arch(s390x) || arch(powerpc64) || arch(powerpc64le) || arch(mips64) || arch(mips64el)
         native = NativeType(bitPattern: UInt64(bitPattern))
 #else
     #error("This architecture isn't known. Add it to the 32-bit or 64-bit line.")
